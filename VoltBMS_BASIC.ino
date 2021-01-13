@@ -100,6 +100,7 @@ int cellspresent = 0;
 int debug = 1;
 int candebug = 0;       //view can frames
 int debugdigits = 3; //amount of digits behind decimal for voltage reading
+int charged = 0;
 
 void loadSettings()
 {
@@ -109,13 +110,13 @@ void loadSettings()
 	settings.OverVSetpoint = 4.26f;
 	settings.UnderVSetpoint = 2.0f;
 	settings.ChargeVsetpoint = 4.235f;
-	settings.ChargeHys = .09; // 0.19f; // voltage drop required for charger to kick back on
+	settings.ChargeHys = .19f; // voltage drop required for charger to kick back on
 	settings.OverTSetpoint = 65.0f;
 	settings.UnderTSetpoint = -10.0f;
 	settings.IgnoreTemp = 0;   // 0 - use both sensors, 1 or 2 only use that sensor
 	settings.IgnoreVolt = 0.5; //
 	settings.balanceVoltage = 3.9f;
-	settings.balanceHyst = 0.02f;
+	settings.balanceHyst = 0.005f;
 	settings.logLevel = 2;
 	settings.CAP = 100;              //battery size in Ah
 	settings.Pstrings = 1;           // strings in parallel used to divide voltage of pack
@@ -276,12 +277,14 @@ void loop()
 
 		if (bms.getHighCellVolt() < (settings.ChargeVsetpoint - settings.ChargeHys)) //detect AC present for charging and check not balancing
 		{
+			charged = 0;
 			bmsstatus = Charge;
 		}
 
 		if (digitalRead(KEY) == HIGH) //detect Key ON
 		{
 			balancecells = false; // stop balancing
+			bmsstatus = Drive;
 		}
 		break;
 
@@ -315,6 +318,7 @@ void loop()
 			{
 				SOCcharged(95);
 			}
+			digitalWrite(CHRG_EN, LOW); //turn off charger
 			bmsstatus = Ready;
 		}
 
