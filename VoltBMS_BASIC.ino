@@ -19,6 +19,7 @@
   SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
   This is a stripped down version of the SIMPBMS Chevy Volt code
+
 */
 
 #include "BMSModuleManager.h"
@@ -650,19 +651,21 @@ void btUpdate()
 		Serial3.print("Charger=  ");
 		if (digitalRead(CHRG_EN) == HIGH)
 		{
-			SERIALCONSOLE.print(" ON ");
+			Serial3.print(" ON ");
 		}
 		else {
-			SERIALCONSOLE.print(" OFF ");
+			Serial3.print(" OFF ");
 		}
+		Serial3.println("");
 		Serial3.print("Balancing=  ");
 		if (balancecells == 1)
 		{
-			SERIALCONSOLE.print(" ON ");
+			Serial3.print(" ON ");
 		}
 		else {
-			SERIALCONSOLE.print(" OFF ");
+			Serial3.print(" OFF ");
 		}
+		Serial3.println("");
 		Serial3.println("--------------------");
 		Serial3.println("--------------------");
 	}
