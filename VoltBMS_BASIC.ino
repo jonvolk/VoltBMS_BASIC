@@ -102,10 +102,10 @@ void loadSettings()
 	Logger::console(0, "Resetting to factory defaults");
 	settings.version = EEPROM_VERSION;
 	settings.batteryID = 0x01; //in the future should be 0xFF to force it to ask for an address
-	settings.OverVSetpoint = 4.26f;
+	settings.OverVSetpoint = 4.25f;
 	settings.UnderVSetpoint = 2.0f;
-	settings.ChargeVsetpoint = 4.235f;
-	settings.ChargeHys = .09f; // voltage drop required for charger to kick back on
+	settings.ChargeVsetpoint = 4.18f;
+	settings.ChargeHys = .11f; // voltage drop required for charger to kick back on
 	settings.OverTSetpoint = 65.0f;
 	settings.UnderTSetpoint = -10.0f;
 	settings.IgnoreTemp = 0;   // 0 - use both sensors, 1 or 2 only use that sensor
