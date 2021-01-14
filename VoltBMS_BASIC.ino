@@ -77,11 +77,6 @@ float ampsecond;
 unsigned long lasttime;
 unsigned long loopTimeMain, looptime, UnderTime, looptime1, cleartime, loopTimeBalance = 0; //ms
 
-//running average
-const int RunningAverageCount = 16;
-float RunningAverageBuffer[RunningAverageCount];
-int NextRunningAverage;
-
 //Variables for SOC calc
 int SOC = 100; //State of Charge
 int SOCset = 0;
@@ -100,7 +95,7 @@ int cellspresent = 0;
 int debug = 1;
 int candebug = 0;       //view can frames
 int debugdigits = 3; //amount of digits behind decimal for voltage reading
-int charged = 0;
+
 
 void loadSettings()
 {
@@ -110,7 +105,7 @@ void loadSettings()
 	settings.OverVSetpoint = 4.26f;
 	settings.UnderVSetpoint = 2.0f;
 	settings.ChargeVsetpoint = 4.235f;
-	settings.ChargeHys = .19f; // voltage drop required for charger to kick back on
+	settings.ChargeHys = .09f; // voltage drop required for charger to kick back on
 	settings.OverTSetpoint = 65.0f;
 	settings.UnderTSetpoint = -10.0f;
 	settings.IgnoreTemp = 0;   // 0 - use both sensors, 1 or 2 only use that sensor
@@ -277,7 +272,7 @@ void loop()
 
 		if (bms.getHighCellVolt() < (settings.ChargeVsetpoint - settings.ChargeHys)) //detect AC present for charging and check not balancing
 		{
-			charged = 0;
+			
 			bmsstatus = Charge;
 		}
 
@@ -299,17 +294,19 @@ void loop()
 
 	case (Charge):
 		balancecells = false;
-
+		
 		digitalWrite(CHRG_EN, HIGH); //enable charger
-		if (bms.getAvgCellVolt() > settings.balanceVoltage && bms.getHighCellVolt() - bms.getLowCellVolt() > (settings.balanceHyst * 2.0))
+
+		/*if (bms.getAvgCellVolt() > settings.balanceVoltage && bms.getHighCellVolt() - bms.getLowCellVolt() > (settings.balanceHyst * 2.0))
 		{
 			//balancecells = true; EDITED
 			//bmsstatus = Ready; EDITED
 		}
+		*/
 
 		// RESET Charge AH
 		if (bms.getHighCellVolt() > getChargeVSetpoint() || bms.getHighTemperature() > settings.OverTSetpoint)
-		{
+		{   
 			if (bms.getAvgCellVolt() > (getChargeVSetpoint() - settings.balanceHyst))
 			{
 				SOCcharged(100);
@@ -318,9 +315,11 @@ void loop()
 			{
 				SOCcharged(95);
 			}
+				
 			digitalWrite(CHRG_EN, LOW); //turn off charger
 			bmsstatus = Ready;
 		}
+		break;
 
 	case (Error):
 		digitalWrite(CHRG_EN, LOW); //turn off charger
@@ -358,6 +357,8 @@ void loop()
 		updateSOC();
 		socFilter();
 		gaugeupdate();
+
+		
 		
 
 		if (!balancecells)
