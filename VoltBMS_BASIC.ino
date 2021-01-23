@@ -104,14 +104,14 @@ void loadSettings()
 	settings.batteryID = 0x01; //in the future should be 0xFF to force it to ask for an address
 	settings.OverVSetpoint = 4.25f;
 	settings.UnderVSetpoint = 2.0f;
-	settings.ChargeVsetpoint = 4.18f;
-	settings.ChargeHys = .11f; // voltage drop required for charger to kick back on
+	settings.ChargeVsetpoint = 4.2f; // 4.13 slave 4.18 master
+	settings.ChargeHys = .2f; // voltage drop required for charger to kick back on
 	settings.OverTSetpoint = 65.0f;
 	settings.UnderTSetpoint = -10.0f;
 	settings.IgnoreTemp = 0;   // 0 - use both sensors, 1 or 2 only use that sensor
 	settings.IgnoreVolt = 0.5; //
-	settings.balanceVoltage = 3.9f;
-	settings.balanceHyst = 0.005f;
+	settings.balanceVoltage = 3.85f;
+	settings.balanceHyst = 0.007f;
 	settings.logLevel = 2;
 	settings.CAP = 100;              //battery size in Ah
 	settings.Pstrings = 1;           // strings in parallel used to divide voltage of pack
@@ -256,7 +256,7 @@ void loop()
 
 		if (bms.getAvgCellVolt() > settings.balanceVoltage)
 		{
-			if ((bms.getHighCellVolt() - bms.getLowCellVolt() > (settings.balanceHyst * 2.0))) // start balancing at hyst value
+			if ((bms.getHighCellVolt() - bms.getLowCellVolt() > (settings.balanceHyst * 2.5))) // start balancing at hyst value
 			{
 				balancecells = true;
 			}
@@ -636,7 +636,7 @@ void btUpdate()
 		Serial3.println("");
 		Serial3.println("");
 		Serial3.print("Temp=  ");
-		Serial3.print((bms.getAvgTemperature() * 1.8) + 32, 1);
+		Serial3.print(bms.getAvgTemperature());
 		Serial3.println("");
 		Serial3.println("");
 		Serial3.print("Pack Volts=  ");

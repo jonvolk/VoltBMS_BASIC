@@ -89,7 +89,17 @@ void BMSModule::decodecan(int Id, CAN_message_t &msg)
       break;
 
     case 0xE0:
-      temperatures[0] = float(((msg.buf[6] << 8) + msg.buf[7]) * -0.0324 + 150);
+      //temperatures[0] = float(((msg.buf[6] << 8) + msg.buf[7]) * -0.0324 + 150);
+        if (((msg.buf[0] << 8) + msg.buf[1]) > 0)
+        {
+            temperatures[0] = float(((((msg.buf[0] << 8) + msg.buf[1]) * .07) - 287) * -1);
+        }
+
+
+        if (((msg.buf[2] << 8) + msg.buf[3]) > 0)
+        {
+            temperatures[0] = float(((((msg.buf[2] << 8) + msg.buf[3]) * .07) - 287) * -1);
+        }
       break;
 
     default:
