@@ -104,7 +104,7 @@ void loadSettings()
 	settings.batteryID = 0x01; //in the future should be 0xFF to force it to ask for an address
 	settings.OverVSetpoint = 4.25f;
 	settings.UnderVSetpoint = 2.0f;
-	settings.ChargeVsetpoint = 4.15f; // 4.13 slave 4.18 master
+	settings.ChargeVsetpoint = 4.2f; // 4.13 slave 4.18 master
 	settings.ChargeHys = .16f; // voltage drop required for charger to kick back on
 	settings.OverTSetpoint = 65.0f;
 	settings.UnderTSetpoint = -10.0f;
@@ -307,7 +307,7 @@ void loop()
 		// RESET Charge AH
 		if (bms.getHighCellVolt() > getChargeVSetpoint() || bms.getHighTemperature() > settings.OverTSetpoint)
 		{   
-			if (bms.getHighCellVolt() > (getChargeVSetpoint() - settings.balanceHyst))
+			if (bms.getAvgCellVolt() > (getChargeVSetpoint() - settings.balanceHyst))
 			{
 				SOCcharged(100);
 			}
